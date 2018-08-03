@@ -192,10 +192,10 @@ Pre-методы:
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_pre.png?raw=true)
 
-Где: 
-M' - новая матрица;
-T - матрица преобразования;
-M - старая матрица;
+Где:
+  * M' - новая матрица;
+  * T - матрица преобразования;
+  * M - старая матрица;
 
 Известно, что одно из свойств умножения матриц это не коммутативность, т.е.:
 
@@ -211,10 +211,10 @@ M - старая матрица;
 ### Подготовка ресурсов
 
 Прежде чем перейти в обсуждению преобразований, подготовим рабочую среду, в которой будем выполнять преобразования. Первым делом, предлагаю скачать картинку в разрешении 240x320 пикселей.
-  
-  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/image.jpg?raw=true)
-  
- Создаём новый пустой проект, в котором описываем activity_main (Layout):
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/image.jpg?raw=true)
+
+  Создаём новый пустой проект, в котором описываем activity_main (Layout):
   
 ~~~ xml
 
@@ -415,6 +415,8 @@ package mercuriy94.com.matrix.affinetransformations;
     
 public class MainActivity extends AppCompatActivity {
 
+    public static final String TAG = "MainActivity";
+  
     ImageView imageView;
 
     @Override
