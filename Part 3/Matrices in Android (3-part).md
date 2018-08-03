@@ -207,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
 ~~~
 
-
 ### Отражение (Reflexion)
 
 Чтобы облегчить понимаение, отражение можно рассмтаривать как вращение изображения.
@@ -230,45 +229,146 @@ public class MainActivity extends AppCompatActivity {
 
 И для оси ординат:
 
- ![](https://bitbucket.org/mercury94/articles/raw/b7f72b41c490f6f9830523bbcd00ebe3fbdeae03/reflect_arround_x_final.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/reflecty_around_y_1.png?raw=true)
  
- ![](https://bitbucket.org/mercury94/articles/raw/b7f72b41c490f6f9830523bbcd00ebe3fbdeae03/reflect_around_x.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_reflect_around_y_2.png?raw=true)
  
 И матрица 3 х 3 получается:
 
- ![](https://bitbucket.org/mercury94/articles/raw/b7f72b41c490f6f9830523bbcd00ebe3fbdeae03/reflect_arround_x_final.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_reflect_around_y_final.png?raw=true)
+ 
+Отлично! Но, как часто приходится отражать относительно начала координат? Ответом наверно будет - скорее всего очень редко. По этому попробуем вывести матрицу для отражения опорной точки. 
+
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_reflect_anchor_point.png?raw=true)
+
+Теперь рассмотрим пример отражения в Android, отночительно точки. Отражать будем отценрованное изображение в сторону верхней границы контейнера. Следовательно коориданты опорной точки будут: 
+  * px = 384 (половина ширины контейнера ImageView);
+  * py = 352 (используемый сдвиг по оси y для центрирования);
+
+Как положено, рассчитаем конечные координаты изображения:
+
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_reflect_anchor_point_sample.png?raw=true)
+ 
+Перейдем к реализации на Android:
+
+~~~java
+
+package mercuriy94.com.matrix.affinetransformations;
+
+public class MainActivity extends AppCompatActivity {
+
+  //  Импорты
+  ...
+  
+    public static final String TAG = "MainActivity";
+
+    ImageView imageView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        imageView = findViewById(R.id.imageView);
+        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                translateToCenterAndReflect();
+            }
+
+        });
+    }
+
+    private void translateToCenterAndReflect() {
+
+        Matrix transformMatrix = new Matrix();
+
+        //region trans
+
+        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
+        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
+
+        Matrix imageMatrix = imageView.getImageMatrix();
+        imageMatrix.postTranslate(tx, ty);
+
+        //endregion trans
+
+        //region reflect
+
+        float px = imageView.getMeasuredWidth() / 2f;
+        float py = ty;
+
+        float[] matrixValues = new float[]{
+                -1f, 0f, 2 * px,
+                0f, -1f, 2 * py,
+                0f, 0f, 1f};
+
+        transformMatrix.setValues(matrixValues);
+        imageMatrix.postConcat(transformMatrix);
+
+        //endregion reflect
+
+        imageView.setImageMatrix(imageMatrix);
+
+        printImageCoords(imageView.getImageMatrix());
+    }
+
+    ...
+
+}
+
+~~~
+
+Результат:
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/image_matrix_reflect_sample_result.png?raw=true)
+
+Отлично! Теперь заглянем в лог:
+
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_reflect_sample_result_coords.png?raw=true)
+
+Да, все правильно! 
 
 ### Итоги
 
-Давайте подведем итог и вспомним, какие матрицы преобразования мы рассмотрели на протежении трех статей:
+Пришло время подвести итоги и вспомнить, какие матрицы преобразования мы рассмотрели на протежении трех статей:
 
 Параллельный перенос (сдвиг):
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_translation.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_translation.png?raw=true)
 
 Масштабирование:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_scale%202.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_scale%202.png?raw=true)
 
 Масштабирование с опорной точкой:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_scale_anchor_point.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_scale_anchor_point.png?raw=true)
 
 Вращение:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_rotate%202.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_rotate%202.png?raw=true)
 
 Вращение с опорной точкой:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_rotate_anchor_point.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_rotate_anchor_point.png?raw=true)
 
 Наклон:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_skew.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_skew.png?raw=true)
 
 Наклон с опорной точкой:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_skew_anchor_point.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/matrix_skew_anchor_point.png?raw=true)
+ 
+Отражение:
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/reflect_final.png?raw=true)
+
+Отражение относительно точки лежащей на плоскости:
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%203/Resources/Images/reflect_anhor_point_final.png?raw=true)
 
 Теперь мы знаем, как применять аффинные преобразования на практике и рассчитывать координату на которую ляжет та или иная точка в результате преобразований. Конечно, чаще всего вам не придется выполнять все эти операции, но знать, по каким правилам изменяется положение точек, необходимо.
 
