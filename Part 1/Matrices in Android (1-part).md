@@ -39,7 +39,7 @@
   
   Вся работа с объектами происходит в прямогульной декартовой системе координат. Каждая точка в данной системе описывается парой координат x и y. Процесс аффинного преобразования точки является переносом данной точки на другую (совмещенную) систему координат. Это процесс описывается системой уравнений:
 
-![alt text](https://bitbucket.org/mercury94/articles/raw/15c5af01e3e04b3d86e7d01896cfc58a7faea322/formuls.png) 
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formuls.png?raw=true) 
 
   Здесь:
       x, y - координаты точки в "старой" системе координат;
@@ -47,18 +47,18 @@
       x(0)',y(0)' - расстояние сдвига одной системы координат по оси абцисс и ординат соответсвтенно;
       a(ij) - числа описывающие параметры преобразования, и они связаны неравенством:
   
-  ![alt text](https://bitbucket.org/mercury94/articles/raw/15c5af01e3e04b3d86e7d01896cfc58a7faea322/matrix_2d.png) 
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_2d.png?raw=true) 
 
 Справедлива будет следующая запись:
 
-![alt text](https://bitbucket.org/mercury94/articles/raw/ad6f8f7d3acd416098a4af390e2bc32121378b0b/%20matrix_2d_2.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/%20matrix_2d_2.png?raw=true)
 
 Но матрица 2 x 2 имеет следующие проблемы:
  - ограничена в количестве выполняемых операций;
 Такая матрица может выполнять операции: масштабирование, вращение, отражение и наклон. Но, к сожалению, мы не сможем выполнить смещение; 
  - Трудоемкий процесс расчета композиции преобразований. Например, композиция из одного преобразования уже выглядит не очень хорошо, а на практике выполняются десятки преобразований:
 
-![alt text](https://bitbucket.org/mercury94/articles/raw/bc0e8ec56d5ebd268304af55e7a2293b51b295ea/matrix2x2_multi.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix2x2_multi.png?raw=true)
 
 Помимо того, что это сложно считать, вызывает затруднение и запись, когда композиция состоит из нескольких преобразований. 
 
@@ -67,19 +67,19 @@
   Итак, чтобы найти однородные координаты точки, необходимо выполнить следующее.
 Предположим, что на плоскости лежит точка T с координатами  x и y.
 
-![](https://bitbucket.org/mercury94/articles/raw/8b9bca0f35e81001ee91285a06a44a8d4e24e715/image1.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/image1.png?raw=true)
 
 Однородными координатами данной точки называется любая тройка одновременно не равных нулю чисел(w1, w2, w3), которые связаны с координатами точки T следующими соотношениями:
 
-![alt text](https://bitbucket.org/mercury94/articles/raw/a50de0db2a8ff93922800752752406b682c120f1/x%3Dw1w3.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/x=w1w3.png?raw=true)
 
-![alt text](https://bitbucket.org/mercury94/articles/raw/a50de0db2a8ff93922800752752406b682c120f1/y%3Dw2w3.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/y=w2w3.png?raw=true)
 
 Точку T можно представить тройкой своих координат w1,w2,w3: любая выбранная точка лежащая на прямой, котороя соединяет начало координат O(0,0,0), c точкой T' (x,y,1).
 Очевидино, что точка T' однозначно определяет точку T, также как и любая точка T'' с координатами (xh,yh,h). Здесь h - является скалярным множителем. Мы сейчас описали точку в однородных координатах. Обычно точку представляют как (x: y: 1). То есть h = 1. Тем не менее, используется общая форма записи (w1 : w2 : w3). Так что, пусть вас такая запись не смущает, если, вдруг, где-нибудь встретите. 
 Как вы знаете, существует и декартова система пространства, где точки также описываются тройкой координат (x,y,z). И, чтобы отличить однородное описание точки от привычного декартовского описания, в однородном описании координаты точки разделяют не запятой, а двоеточием. Итак, теперь запишем общую формулу аффиного преобразования. 
 
-![](https://bitbucket.org/mercury94/articles/raw/cc7a05bd54dd320ea30b045d4905dd91e9776847/matrix_af.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_af.png?raw=true)
 
 При умножении этих матрицы, получаем два основных уравнения, которые описывают перенос точки от одной системы координат в совмещенную.
 
@@ -90,31 +90,31 @@
 
 Мы теперь знаем, что для двумерных однородных координат используется матрица линнейного преобразования общего вида. 
 
-![](https://bitbucket.org/mercury94/articles/raw/228a85077be747ab552a45601c3c7ecc36136422/matrix_at_3x3.png) 
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_at_3x3.png?raw=true) 
     
 Данная матрица содержит 4 подматрицы. Которые составлены по принципу разнородности их влияния на результат линейного преобразования. 
 
   1.   Ниже изображена подматрица 2 х 2. 
-![](https://bitbucket.org/mercury94/articles/raw/5bb624ffff8c6a837f50e29401121951a0f6db22/submatrix_2x2_1.png) 
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_2x2_1.png?raw=true) 
 
   Элементы данной подматрицы отвечают за операции: масштабирование, вращения и сдвиг;
 
   2. Следующая подматрица 1 х 2. 
-![](https://bitbucket.org/mercury94/articles/raw/5bb624ffff8c6a837f50e29401121951a0f6db22/submatrix_1x2_2.png) 
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_1x2_2.png?raw=true) 
      Элементы данной подматрица отвечают за операцию перемещения (смещения).
     
   3. Подматрица 2 х 1.
-      ![](https://bitbucket.org/mercury94/articles/raw/5bb624ffff8c6a837f50e29401121951a0f6db22/submatrix_2x1_3.png) 
+      ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_2x1_3.png?raw=true) 
       Элементы данной подматрицы отвечают за задание проекции. 
   4. И наконец подматрица размерностью 1 x 1.
-      ![](https://bitbucket.org/mercury94/articles/raw/5bb624ffff8c6a837f50e29401121951a0f6db22/submatrix_1x1_4.png) 
+      ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_1x1_4.png?raw=true) 
       Элемент данной подматрицы отвечает за однородное изменение масштаба.
 
   По своей сути это - элементарные преобразования. Более сложные преобразования представляют цепочку последовательно выполняемых элементарных преобразований.
 
    В конечном итоге, мы ищем положение точки после выполнения операции преобразования над ней:
 
-   ![](https://bitbucket.org/mercury94/articles/raw/f7bdf795f63b4936482c466dc46d0308756fdee1/matrix_at_basic.png)
+   ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_at_basic.png?raw=true)
 
    Здесь:
    T - применяемая матрица преобразования;
@@ -179,11 +179,11 @@ Pre-методы:
 
 Из документации методов видим порядок умножения матриц меняется. В случае с post-методами: 
 
-![](https://bitbucket.org/mercury94/articles/raw/6d734f58df0f2805bbbf10d5285eb6bbca0eae52/matrix_post.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_post.png?raw=true)
 
 И pre-методами:
 
-![](https://bitbucket.org/mercury94/articles/raw/6d734f58df0f2805bbbf10d5285eb6bbca0eae52/matrix_pre.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_pre.png?raw=true)
 
 Где: 
 M' - новая матрица;
@@ -192,7 +192,7 @@ M - старая матрица;
 
 Известно, что одно из свойств умножения матриц это не коммутативность, т.е.:
 
-![](https://bitbucket.org/mercury94/articles/raw/01cb1ff60daa0ee82e9e137d3b7a608b03ebab8b/AB.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/AB.png?raw=true)
 
 А это означает, что при выполнении pre- и post- операций, получим различные результаты.
 
@@ -205,7 +205,7 @@ M - старая матрица;
 
 Прежде чем перейти в обсуждению преобразований, подготовим рабочую среду, в которой будем выполнять преобразования. Первым делом, предлагаю скачать картинку в разрешении 240x320 пикселей.
   
-  ![](https://images.wallpaperscraft.ru/image/kot_morda_ochki_tolstyy_65455_240x320.jpg)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/image.jpg?raw=true)
   
  Создаём новый пустой проект, в котором описываем activity_main (Layout):
   
@@ -236,11 +236,11 @@ M - старая матрица;
 
 В исходном состоянии левый верхний угол изображения соответствует центру координатных осей, матрица координат картинки получается следующая:
   
-  ![](https://bitbucket.org/mercury94/articles/raw/bd2affed0c8697d3681976c51303ad99a7553b80/matrix_input_coords.png)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_input_coords.png?raw=true)
 
 Вот так выглядит начальное изображение без преобразований:
 
-![](https://bitbucket.org/mercury94/articles/raw/f77d2f5ab84ac9bbb56c83610aca227c918eb4a5/sample_1_before.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/sample_1_before.png?raw=true)
 
  Чтобы получить исходную матрицу изображения, напишем метод `printMatrixValues`, который будет выводит в лог параметры матрицы переданной в параметрах метода.
  
@@ -288,11 +288,11 @@ public class MainActivity extends AppCompatActivity {
 
 Вывод:
 
-![](https://bitbucket.org/mercury94/articles/raw/4567cdd1acfb77e1773542cfb1aee11f9edf1d54/matix_values_log_input.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matix_values_log_input.png?raw=true)
   
 Обратите внимание, что исходная матрица является единичной,  а это означает, что её можно не учитывать в вычислениях, так как она не оказывает влияние на результат:
   
-  ![](https://bitbucket.org/mercury94/articles/raw/f6348fb842d1ab4df8dfb3551fad95e91dbc1edb/android_input_matrix.png)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/android_input_matrix.png?raw=true)
   
 Метод `printMatrixValues(Matrix matrix) ` нам еще пригодится для вывода в лог окончательной матрицы преобразований.
  
@@ -308,25 +308,7 @@ import org.ejml.simple.SimpleMatrix;
 
 ...
 
-    private void printImageCoords(Matrix matrix) {
-
-        float imageWidth = imageView.getDrawable().getIntrinsicWidth();
-        float imageHeight = imageView.getDrawable().getIntrinsicHeight();
-        float[] inputCoords = new float[]{
-                0f, imageWidth, imageWidth, 0f,
-                imageHeight, imageHeight, 0f, 0f,
-                1f, 1f, 1f, 1f};
-
-        SimpleMatrix matrixCoords = new SimpleMatrix(3, 4, true, inputCoords);
-        matrixCoords.print();
-
-        float[] values = new float[9];
-        matrix.getValues(values);
-        SimpleMatrix imageImatrix = new SimpleMatrix(3, 3, true, values);
-        SimpleMatrix resultCoords = imageImatrix.mult(matrixCoords);
-        resultCoords.print();
-    }
-
+   1
 ...
 
 ~~~
@@ -340,7 +322,7 @@ import org.ejml.simple.SimpleMatrix;
 Данный класс умеет самостоятельно выводить значения с помощью методов `print()`. Вывод попадает в Logcat c тегом = "System.out", что добавляет удобство в чтении координат углов изображения.
 Ниже представлен результат координат исходной матрицы:
 
-![](https://bitbucket.org/mercury94/articles/raw/e1de4bd73db5b8447d09f21b9a1f46dc34cb75da/sample_result_coords_img.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/sample_result_coords_img.png?raw=true)
  
 Наконец-то все готово! 
 В заключении первой части, предлагаю рассмотреть несложное преобразование.
@@ -350,50 +332,50 @@ import org.ejml.simple.SimpleMatrix;
   По моему мнению, это - самый простой вид преобразования, его также называют параллельный перенос.
   Преобразование сдвига  устанавливает соответствие между координатами точки в двух координатных системах, одна из которых сдвинута относительно другой на расстояние дельта X по горизонтали и дельта Y по вертикали.
 
-![](https://bitbucket.org/mercury94/articles/raw/2c508e4f5d74f8bc79cc503a68b9d1896fec94b7/formula_trans.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans.png?raw=true)
 
 Если начать раскрывать скобки, то получим следующую систему уравнений:
 
-![](https://bitbucket.org/mercury94/articles/raw/f15a5cd8c0964a08f8a6312aa5bce32c50065a54/formula_trans_2.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans_2.png?raw=true)
 
 Чтобы решить такую систему, нам необходимо рассмотреть каждое равенство в отдельности. Начнем с первого:
 
-![](https://bitbucket.org/mercury94/articles/raw/f15a5cd8c0964a08f8a6312aa5bce32c50065a54/formula_trans_x.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans_x.png?raw=true)
 
 Нам необходимо выбрать такие значение коэффициентов a,b и с, чтобы данное равенство было верно.
 Мы с вами уже знаем, что z всегда равна 1, это обсуждалось в разделе "Аффинные преобразования". 
 Так как левая часть уравнения не содержит параметра y, следовательно b = 0. Давайте взглянем на получившееся уравнение:
 
-![](https://bitbucket.org/mercury94/articles/raw/41aad2e6e91a16cce03fdb81c6f1894320250bc9/formula_trans_x_2.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans_x_2.png?raw=true)
 
 Теперь остается подобрать коэффициенты a и с. Следовательно:
 
-![](https://bitbucket.org/mercury94/articles/raw/a68e654566ef6436782100ad3ec9fb2756b24d29/a%3D1%20c%3Dtx.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/a=1%20c=tx.png?raw=true)
 
 Теперь перейдем ко второму уравнению:
 
-![](https://bitbucket.org/mercury94/articles/raw/f15a5cd8c0964a08f8a6312aa5bce32c50065a54/formula_trans_y.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans_y.png?raw=true)
 
 Здесь, как и в первом уравнении выполняем поиск коэффициентоф d,e и f для выполнения данного равенства.
 Знаем, что z = 1. Левая часть не содержит параметра x, значит d = 0.
 Получаем уравнение:
  
- ![](https://bitbucket.org/mercury94/articles/raw/41aad2e6e91a16cce03fdb81c6f1894320250bc9/formula_trans_y_2.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans_y_2.png?raw=true)
  
 Из этого уравнения получаем:
 
- ![](https://bitbucket.org/mercury94/articles/raw/a68e654566ef6436782100ad3ec9fb2756b24d29/e%3D1%20f%3Dty.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/e=1%20f=ty.png?raw=true)
  
 C третьим уравннием все еще легче. 
 
-![](https://bitbucket.org/mercury94/articles/raw/f15a5cd8c0964a08f8a6312aa5bce32c50065a54/formula_trans_z.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formula_trans_z.png?raw=true)
 
 Чтобы удовлитврорялось данное равенство, принимаем g и h равные нулю. 
 Так как z = 1. То получаем i = 1.
 
 В итоге, для выполнения смещения получаем матрицу размерностью 3 x 3:
 
-![](https://bitbucket.org/mercury94/articles/raw/207e58ab7ce1a823142a1d8a0c81d03d939ccb03/trans_matrix_final.png) 
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/trans_matrix_final.png?raw=true) 
 
 Скорее всего, если вы до сих пор читаете эту статью, то вам действительно интересно, и все понятно.  Следовательно, я не вижу смысла расписывать каждое преобразование с такой подробностью :=). 
 
@@ -402,18 +384,18 @@ C третьим уравннием все еще легче. 
 
 По всей логике, мы должны умножить матрицу координат на матрицу смещения. Но так как размерности матрицы различаются, то мы добавляем к матрице координат строку заполненную единицами. И получаем такую формулу:
 
-![](https://bitbucket.org/mercury94/articles/raw/e7d94ff4b67b9881a100bb3f4509b5a589e631e9/formala_matrtix_trans_multiplay.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/formala_matrtix_trans_multiplay.png?raw=true)
 
 А теперь давайте рассмотрим данный тип преобразования на практике.
 В качестве примера, сделаем перенос изображения в центр контейнера ImageView, чтобы центр изображения и экрана совпадали. Для того, чтобы вычислить расстояние сдвига по оси абсцисс, нам необходимо от ширины контейнера отнять ширину картинки и поделить на 2. Аналогично поступаем и с высотой, чтобы вычислить сдвиг по оси ординат. В моем случае ширина контейнера равна 768, а высота 1024. Теперь рассчитаем сдвиги: 
 
-![](https://bitbucket.org/mercury94/articles/raw/911004e204229f2c5c76e774d2437e739316c94c/trans_sample_tx_ty_calc.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/trans_sample_tx_ty_calc.png?raw=true)
 
 Получившаяся матрица однозначно описывает координаты углов изображения в контейнере ImageView.
 
 Теперь вычислим конечные координаты углов изображения:
 
-![](https://bitbucket.org/mercury94/articles/raw/c5a4821acb200f5ebae32ad1ac01655fa2a2de69/sample_trans_results.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/sample_trans_results.png?raw=true)
 
 А теперь реализуем в Android (все внимание на метод `translateToCenter`):
 
@@ -472,11 +454,11 @@ public class MainActivity extends AppCompatActivity {
 
 ~~~
 
-![](https://bitbucket.org/mercury94/articles/raw/3ef188e65eddf0d398f777eac122121f0e9095ea/image_sample_trans_result.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/image_sample_trans_result.png?raw=true)
 
 Вывод в Logcate:
 
-![](https://bitbucket.org/mercury94/articles/raw/1bd60cb079ac8fa382b2ecb6902ee8c94b50f0ec/matix_values_log_input_trans.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matix_values_log_input_trans.png?raw=true)
 
 Все верно! Рассчитанные и получившиеся коордианты изображения после преобразования совпадают.
 
@@ -502,3 +484,6 @@ public class MainActivity extends AppCompatActivity {
 ~~~
 
 Можете поменять postTranslate на preTranslate, но результат останется таким же. Потому что базовая матрица является единичной. Собственно, по этому мы не учли ее в вычислениях. Но если бы до этого применялось какое-нибудь преобразование, то результаты бы различались.
+
+Во второй части рассматривются такие виды преобразования как масштабирование и вращение!
+Спасибо, за внимание!
