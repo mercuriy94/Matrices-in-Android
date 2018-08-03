@@ -126,13 +126,13 @@ public class MainActivity extends AppCompatActivity {
 Пример:
 
 Чтобы все было красиво, давайте перед этим выполним известную нам операцию переноса в центр контейнера. Таким образом, у нас получится комбинация преобразований. 
-Как и прежде, сначала рассчитаем финальное положение углов изображения. Но, чтобы это выполнить, нам необходимо получить опорную точку для масштабирования. Так как изображение будет находиться в центре контейнера, то опорной точкой будет центр контейнера, координаты которой равны половине его размеров. В моем случае получилось: 
-px = 384;
-py = 512;
+Как и прежде, сначала рассчитаем финальное положение углов изображения. Но, чтобы это выполнить, нам необходимо получить опорную точку для масштабирования. Так как изображение будет находиться в центре контейнера, то опорной точкой будет центр контейнера, координаты которой равны половине его размеров. В моем случае получилось:
+  * px = 384;
+  * py = 512;
 
 Параметры  tx и ty равны 264 и 352 соответственно, мы их вычисляли в первой части статьи. Теперь когда нам известны все переменные, можем перейти к вычислениям:
 
- ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_formula_scale_sample_anchor_point.png?raw=true)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_formula_scale_sample_anchor_point.png?raw=true)
  
 А теперь напишем реализацию в Android:
 
@@ -222,11 +222,12 @@ public class MainActivity extends AppCompatActivity {
  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_sample_scale_2_result.png?raw=true)
  
  Вывод лога можно разбить на 2 части:
- 1 -  Вывод получившейся матрицы преобразования:
+
+1. Вывод получившейся матрицы преобразования:
  
   ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_scale_trans.png?raw=true)
  
- 2 - Вывод коордиант изображения после преобразования:
+2. Вывод коордиант изображения после преобразования:
  
   ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_scale_trans_coords.png?raw=true)
 
