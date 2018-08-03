@@ -10,17 +10,17 @@
 
 В итоге получаем следующее:
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/badafb3ce85837b42e4840870d977d18ed72a063/matrix_scale.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_scale.png?raw=true)
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/18c664ba4f9bb86d7d1ca7c0c680e3a1ba6a5854/matrix_scale_final.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_scale_final.png?raw=true)
 
 Получим матрицу 3х3 для применения масштабирования:
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/46cecd569b0d78ff09c89b7872ead8170826f4a2/matrice_scale.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrice_scale.png?raw=true)
 
 Чтобы применить матрицу масштабирования, ее надо умножить на матрицу координат:
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/fa9de303cd85f41e9a4ecbb43a2a493dbc537490/matrix_scale_example.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_scale_example.png?raw=true)
 
 Теперь рассмотрим применение масштабирвания в Android.
 
@@ -28,7 +28,7 @@
 
 Первым делом давайте вычислим координаты углов изображения после преобразования:
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/c5a4821acb200f5ebae32ad1ac01655fa2a2de69/sample_scale_results.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/sample_scale_results.png?raw=true)
  
 Посмотрите на реализацию:
 
@@ -87,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
 Результат:
 
-![](https://bitbucket.org/mercury94/articles/raw/926bee3b2a5674da6ddb3f3dc03cb69b851bb3a2/image_sample_scale_result.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_sample_scale_result.png?raw=true)
 
 Убеждаемся в паравильности расчетов:
 
-![](https://bitbucket.org/mercury94/articles/raw/648289e11fd7e7ea90a53cd82a08c99c3ec45fe5/matix_values_log_input_scale_coords.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_scale_coords.png?raw=true)
 
 Скорее всего, вы уже догадались, что нам необязательно создавать матрицу преобразования. Для этого нам достаточно знать о методах postScale(...) и preScale(...). Эти методы включают в себя обязательные параметры: sx и sy. А также опциональные (необезательные) параметры: px и py. 
 Вот так выглядит использование метода scale(), без матрицы преобразования:
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
 Тогда матрица 3 х 3 для масштабирваония вокруг опорной точки имеет вид:
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/f5f4a398335fa13ad5a7f640b17f200dcaab93fb/matrix_scale_anchor_point_formula.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_scale_anchor_point_formula.png?raw=true)
 
 Пример:
 
@@ -132,7 +132,7 @@ py = 512;
 
 Параметры  tx и ty равны 264 и 352 соответственно, мы их вычисляли в первой части статьи. Теперь когда нам известны все переменные, можем перейти к вычислениям:
 
- ![](https://bitbucket.org/mercury94/articles/raw/cdb15790f15294bdcee25755ad767d1e66c3dbbf/image_formula_scale_sample_anchor_point.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_formula_scale_sample_anchor_point.png?raw=true)
  
 А теперь напишем реализацию в Android:
 
@@ -219,16 +219,16 @@ public class MainActivity extends AppCompatActivity {
 
 Для удобства чтения я разбил метод на 2 региона, чтобы вы могли с легкостью наблюдать последовательное применение преобразования. Результат получился следующим:
 
- ![](https://bitbucket.org/mercury94/articles/raw/926bee3b2a5674da6ddb3f3dc03cb69b851bb3a2/image_sample_scale_2_result.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_sample_scale_2_result.png?raw=true)
  
  Вывод лога можно разбить на 2 части:
  1 -  Вывод получившейся матрицы преобразования:
  
-  ![](https://bitbucket.org/mercury94/articles/raw/74f0391589c3453964a5c42498ec84b9e36ec461/matix_values_log_input_scale_trans.png)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_scale_trans.png?raw=true)
  
  2 - Вывод коордиант изображения после преобразования:
  
-  ![](https://bitbucket.org/mercury94/articles/raw/74f0391589c3453964a5c42498ec84b9e36ec461/matix_values_log_input_scale_trans_coords.png)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_scale_trans_coords.png?raw=true)
 
 Выводы, позволяют нам судить, что наши расчеты верны!
 
@@ -279,44 +279,44 @@ public class MainActivity extends AppCompatActivity {
 
 Чтобы найти формулу преобразования координат, выберем произвольную точку(x,y), вектор которой обозначим r. Тут уже требуется освежить в памяти тригонометрию.
 
-![](https://bitbucket.org/mercury94/articles/raw/c6692dc1ac6de6224e2bb2ff59ef8d1297c4f4bd/x%3Drcos.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/x=rcos.png?raw=true)
 
-![](https://bitbucket.org/mercury94/articles/raw/c6692dc1ac6de6224e2bb2ff59ef8d1297c4f4bd/y%3Drsin.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/y=rsin.png?raw=true)
 
 Если повернем на угол тета:
 
-![](https://bitbucket.org/mercury94/articles/raw/2782d406809d3841b70a180ba865aded99819975/x'%3Drcos.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/x'=rcos.png?raw=true)
 
-![](https://bitbucket.org/mercury94/articles/raw/2782d406809d3841b70a180ba865aded99819975/y'%3Drsin.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/y'=rsin.png?raw=true)
 
 Зная формулы суммы углов для синуса и косинуса:
 
-![](https://bitbucket.org/mercury94/articles/raw/359494d16437cda621b58d6f3e58d967ee007768/sin(a%2Bq).png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/sin(a+q).png?raw=true)
 
-![](https://bitbucket.org/mercury94/articles/raw/359494d16437cda621b58d6f3e58d967ee007768/cos(a%2Bq).png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/cos(a+q).png?raw=true)
 
 Тогда:
 
-![](https://bitbucket.org/mercury94/articles/raw/19e09c403a2a2da89975c9786c6bd9ffc4360d9f/x'%3Drcos(a%2Bq).png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/x'=rcos(a+q).png?raw=true)
 
-![](https://bitbucket.org/mercury94/articles/raw/19e09c403a2a2da89975c9786c6bd9ffc4360d9f/y'%3Drsin(a%2Bq).png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/y'=rsin(a+q).png?raw=true)
 
 Раскроем скобки и выполним замены, получим:
 
-![](https://bitbucket.org/mercury94/articles/raw/02a2a049b28933fec9b6215bed9e2d88b5fc50f6/x'%3Dmatrix_rotate_formula.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/x'=matrix_rotate_formula.png?raw=true)
 
-![](https://bitbucket.org/mercury94/articles/raw/02a2a049b28933fec9b6215bed9e2d88b5fc50f6/y'%3Dmatix_rotate_formula.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/y'=matix_rotate_formula.png?raw=true)
 
 Теперь осталось найти матрицу преобразования:
 
-![](https://bitbucket.org/mercury94/articles/raw/7b57c4dcb0ca1106bcfad262b029b591c90d4c83/matrix_rotate.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_rotate.png?raw=true)
 
-![](https://bitbucket.org/mercury94/articles/raw/1b1773bc57459bcb559622d895739956293f9ebb/matrix_rotate_final.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_rotate_final.png?raw=true)
 
 
 И получим матрицу 3 х 3, применяемую для преобразования вращения: 
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/7b9979eddf5b845a2a12b9c4fa4fb00a7b0b601a/matrix_rotate_final_formula.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_rotate_final_formula.png?raw=true)
 
   Чтобы вращать плоскость вокруг опорной точки (например центра изображения), необходимо выполнить следующие операции преобразования:
   1: Сместить на обратные координаты опорной точки;
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
 Таким способом мы получим необходимую матрицу преобразования вокруг опорной точки:
 
-![Alt Text](https://bitbucket.org/mercury94/articles/raw/07175207dc95257399568f7932332e641c7b7e09/matrix_rotate_anchor_point_final.png)
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_rotate_anchor_point_final.png?raw=true)
 
 Так как мы испольузем несколько разных типов преобразований, то этот вид вращения можно считать комбинацией преобразований.  
 
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
 P.S: Предвижу ваши ужасания, но вам необязательно прослеживать весь путь решения, достаточно понимать выполняемые действия :=) 
  
- ![](https://bitbucket.org/mercury94/articles/raw/1351698066b8974389943da139749c5ae450779b/formua_sample_image_rotate_anchor_point%20%D0%BA%D0%BE%D0%BF%D0%B8%D1%8F.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/formua_sample_image_rotate_anchor_point.png?raw=true)
  
  Теперь, наконец-то, давайте перейдем к коду:
  
@@ -422,13 +422,13 @@ public class MainActivity extends AppCompatActivity {
 
 Я переименовал метод в transScaleRotate(). Операции сдвига и масштабирования я оставил не изменными, но добавил регион кода выполняющего вращение (rotate). 
 
- ![](https://bitbucket.org/mercury94/articles/raw/4c868fdfd3f39d25ab798453ea8b673d24c4a111/image_sample_rotate.png)
+ ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_sample_rotate.png?raw=true)
  
  Выводы в лог подтвреждают правильность наших расчетов:
  
-  ![](https://bitbucket.org/mercury94/articles/raw/6e725d4f24d5b9fbdd118e2d42f25b3eb4591f98/matix_values_log_input_transScaleRotate.png)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_transScaleRotate.png?raw=true)
 
-  ![](https://bitbucket.org/mercury94/articles/raw/6e725d4f24d5b9fbdd118e2d42f25b3eb4591f98/matix_values_log_input_transScaleRotate_coords.png)
+  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_transScaleRotate_coords.png?raw=true)
  
   Конечно, класс Matrix включает в себя уже готовыe методы для выполнения вращения: postRotate и preRotate. У данных методов есть обязательный параметр degrees, который определяет угол поворота плоскости изображения в градусах. А также опциональные параметры px и py, также как и в масштабирование эти параметры определяют координату опорной точки. А теперь, по традиции, перепишем метод transScaleRotate с использованием метода postRotate(). 
 Обратите внимание, что в операциях масштабирования и вращения мы используем одни и те же значения px и py, так как координаты опорных точек для этих опреаций вы выбрали одинаковыми, что является центром контейнера ImageView.
