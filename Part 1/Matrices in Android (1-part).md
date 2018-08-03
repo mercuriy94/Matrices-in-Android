@@ -101,18 +101,21 @@
 
   Элементы данной подматрицы отвечают за операции: масштабирование, вращения и сдвиг;
   
-2. Следующая подматрица 1 х 2. 
+2. Следующая подматрица 1 х 2.
+
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_1x2_2.png?raw=true)
 
   Элементы данной подматрица отвечают за операцию перемещения (смещения).
   
 3. Подматрица 2 х 1.
-      ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_2x1_3.png?raw=true)
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_2x1_3.png?raw=true)
 
 Элементы данной подматрицы отвечают за задание проекции. 
 
 4. И наконец подматрица размерностью 1 x 1.
-      ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_1x1_4.png?raw=true)
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/submatrix_1x1_4.png?raw=true)
 
   Элемент данной подматрицы отвечает за однородное изменение масштаба.
   
