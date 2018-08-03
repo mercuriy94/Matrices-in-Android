@@ -242,8 +242,8 @@ Pre-методы:
   Я буду тестировать на эмуляторе устройства Nexus 4. Учитывая плотность пикселей, я разместил изображение в папке drawable-xhdpi с именем image. Так я буду получать точные размеры изображения.
 
 В исходном состоянии левый верхний угол изображения соответствует центру координатных осей, матрица координат картинки получается следующая:
-  
-  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_input_coords.png?raw=true)
+
+![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix_input_coords.png?raw=true)
 
 Вот так выглядит начальное изображение без преобразований:
 
