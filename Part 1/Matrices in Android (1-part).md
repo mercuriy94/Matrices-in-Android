@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
   Обратите внимание, что преобразования сводятся к умножению точки лежащей на плоскости на матрицу преобразования.  Результатом являются координаты совмещенной точки. В таком случае необходимо добавить функционал, который будет подтверждать или опровергать правильность вычислений, добиться этого можно, печатая в лог координаты точек совмещенного изображения. Класс Matrix из SDK Android для этой цели не подходит, так как он работает только с матрицами 3x3. Нам как минимум требуется матрица размерностью 3x4, для расчета координат углов изображения. Подключаем эффективную библиотеку для работы с матрицами ([Ссылка на главную страницу](http://ejml.org/wiki/index.php?title=Main_Page)). 
 Предполагаю, что процесс подключения библиотеки в проект, не вызовет затруднений.
 
-  Теперь напишем метод, который будет демонстрировать координаты изображения после применения преобразования:
+  Теперь напишем метод, который будет показывать координаты изображения после применения преобразования:
  
 ~~~ java
 
@@ -315,7 +315,26 @@ import org.ejml.simple.SimpleMatrix;
 
 ...
 
-   1
+      private void printImageCoords(Matrix matrix) {
+
+        float imageWidth = imageView.getDrawable().getIntrinsicWidth();
+        float imageHeight = imageView.getDrawable().getIntrinsicHeight();
+
+        float[] inputCoords = new float[]{
+                0f, imageWidth, imageWidth, 0f,
+                imageHeight, imageHeight, 0f, 0f,
+                1f, 1f, 1f, 1f};
+
+        SimpleMatrix matrixCoords = new SimpleMatrix(3, 4, true, inputCoords);
+        matrixCoords.print();
+
+        float[] values = new float[9];
+        matrix.getValues(values);
+        SimpleMatrix imageImatrix = new SimpleMatrix(3, 3, true, values);
+        SimpleMatrix resultCoords = imageImatrix.mult(matrixCoords);
+        resultCoords.print();
+    }
+    
 ...
 
 ~~~
