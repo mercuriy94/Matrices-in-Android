@@ -8,7 +8,7 @@
 
 ### Введение
 
-На протяжении трёх статей я попытаюсь раскрыть и объяснить основные принципы трансформаций двухмерного пространства с помощью аффинных преобразований, а также рассмотреть примеры часто используемых трансформаций. Для демонстрации примеров я буду использовать компонент ImageView c установленным параметром ScaleType = MATRIX. Отметим, что все трансформации, применяемые к ImageView, так же могут быть применены к вашим кастомным view - элементам, если вдруг для отрисовки вы используете шейдеры (Shaders).
+На протяжении трёх статей я попытаюсь раскрыть и объяснить основные принципы трансформаций двухмерного пространства с помощью аффинных преобразований, а также рассмотреть примеры часто используемых трансформаций. Для демонстрации примеров я буду использовать виджет ImageView c установленным параметром ScaleType = MATRIX. Отметим, что все трансформации, применяемые к ImageView, так же могут быть применены к вашим кастомным view - элементам, если вдруг для отрисовки вы используете шейдеры (Shaders).
 
 Хорошо, а теперь рассмотрим, какие темы будут подниматься на протяжении всей серии статей.
 
@@ -37,16 +37,14 @@
 
   Перед тем как мы начнем обсуждать аффинные преобразования, нужно понять несколько моментов. 
   
- До того, как изображение появится на экране, оно должно быть как-то описано в графической системе устройства. Первоначально свойства объекта отображаются в системе координат этого самого объекта. Таким образом, при изменении пространства объект будет оставаться неизменным с течением времени.Например, представим, что на экране находятся два разных объекта (изображения). Каждый из них будет описываться в своей системе координат, при этом преобразование плоскости одного изображения не повлечет изменение другого. 
+ До того, как изображение появится на экране, оно должно быть как-то описано в графической системе устройства. Первоначально свойства объекта отображаются в системе координат этого самого объекта. Таким образом, при изменении пространства объект будет оставаться неизменным с течением времени. Например, представим, что на экране находятся два разных объекта (изображения). Каждый из них будет описываться в своей системе координат, при этом преобразование плоскости одного изображения не повлечет изменение другого. Чтобы описать расположение объектов, нам необходимо поместить все наши объекты в независимую от них плоскость. Здесь, давайте введем новое понятие "мировая система координат", где располагаются все наши графические объекты. Пользователи, по своей сути, являются наблюдателями и, так же, живут в своей системе координат (система координат наблюдателя). Системы координат объектов и наблюдателя являются трехмерными. Получается, в процессе обработки изображения, система координат объекта преобразуется в двумерную координатную плоскость. Объекты могут эволюционировать относительно наблюдателя. То есть менять свое расположение, сжиматься, вращаться и т.д. 
   
-  Представим, что на экране находятся две разные картинки. Каждая из них будет описываться в своей системе координат, при этом преобразование плоскости одной картинки не повлечет изменение другой. Чтобы описать расположение объектов, нам необходимо поместить все наши объекты в независимую от них плоскость. Здесь, давайте введем новое понятие "мировая система координат", где располагаются все объекты. Пользователи, по своей сути, являются наблюдателями и, так же, живут в своей системе координат (система координат наблюдателя). Системы координат объектов и наблюдателя являются трехмерными. Получается, в процессе обработки изображения, система координат объекта преобразуется в двумерную координатную плоскость. Объекты могут эволюционировать относительно наблюдателя. То есть менять свое расположение, сжиматься, вращаться и т.д. 
-  
-  Есть два решения для описания процесcов преобразований. Первый подход предполагает, что система координат наблюдателя остается неподвижна, а мировая система координат и система координат объекта могут эволюционировать. Данный вариант более удобен для наблюдения за изменениями объекта - он используется в операционной системе Android. Второй подход предполагает, что неподвижна мировая система координат, а системы координат наблюдателя и объекта эволюционируют. В операционной системе андройд используется первый подход.
+  Есть два решения для описания процесcов преобразований. Первый подход предполагает, что система координат наблюдателя остается неподвижна, а мировая система координат и система координат объекта могут эволюционировать. Данный вариант более удобен для наблюдения за изменениями объекта. Второй подход предполагает, что неподвижна мировая система координат, а системы координат наблюдателя и объекта эволюционируют. В операционной системе Android используется первый подход.
   
 Таким образом, мы выяснили, что имеется 2 плоскости:
 
 1. Плоскость объекта, которую мы будем преобразовывать;
-2. Плоскость наблюдателя, благодаря которой мы можем наблюдать изменения объекта;
+2. Плоскость наблюдателя, из которой мы можем наблюдать изменения объекта;
 
   Вся работа с объектами происходит в прямоугольной декартовой системе координат, где каждая точка описывается парой координат x и y. Процесс аффинного преобразования точки является переносом данной точки на другую (совмещенную) систему координат. Этот процесс описывается системой уравнений:
 
@@ -65,7 +63,7 @@
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/%20matrix_2d_2.png?raw=true)
 
 Однако матрица 2 x 2 имеет следующие проблемы:
-  * Матрица имеет ограничения по количеству выполняемых операций (Она дает возможность совершать такие действия, как масштабирование, вращение, отражение и наклон. Но, к сожалению, мы не сможем выполнить смещение);
+  * Матрица имеет ограничения по количеству выполняемых операций (Она дает возможность совершать такие действия, как масштабирование, вращение, отражение и наклон. Но, к сожалению, мы не сможем выполнить перемещение объекта);
   * Трудоемкий процесс расчета композиции преобразований. Например, композиция из одного преобразования уже выглядит громоздко, а на практике выполняются десятки преобразований:
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/matrix2x2_multi.png?raw=true)
@@ -142,7 +140,7 @@
 К сожалению, чаще всего это не так. Если взглянуть на класс матрицы в Android [android.graphics.Matrix](https://android.googlesource.com/platform/frameworks/base/+/master/graphics/java/android/graphics/Matrix.java), то можно увидеть много oops(); и вызовов методов native_. В общем, никакой полезной информации там нет. Это связано с тем, что реальные операции выполняются классом Matrix, написанном на C++. То есть, Matrix.java является прослойкой между пользовательским кодом и нативными вызовами. 
 
 Полагаю, что кого-нибудь заинтересует реализация класса Matrix.cpp. 
-[Здесь](https://android.googlesource.com/platform/frameworks/base/+/master/core/jni/android/graphics/Matrix.h) вы найдете интерфейс Matrix.h, а [здесь](https://android.googlesource.com/platform/frameworks/base/+/master/core/jni/android/graphics/Matrix.cpp) собственно реализацию Matrix.cpp. 
+[Здесь](https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/libs/hwui/jni/android_graphics_Matrix.h) вы найдете интерфейс Matrix.h, а [здесь](https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/libs/hwui/jni/android_graphics_Matrix.cpp) собственно реализацию Matrix.cpp. 
 Но и это еще не все. Matrix.cpp так же, в свою очередь, является посредником, так как все операции над матрицами он делегирует классу SkMatrix. Интерфейс этого класса можете глянуть [здесь](https://android.googlesource.com/platform/external/skia/+/master/include/core/SkMatrix.h) (SkMatrix.h) и его реализацию [здесь](https://android.googlesource.com/platform/external/skia/+/master/src/core/SkMatrix.cpp) (SkMatrix.cpp). 
     
   Если мы, например, начнем изучать класс матриц, со страницы  документации от Google ([ссылка](https://developer.android.com/reference/android/graphics/Matrix)), то первое, что нам показывают — это список констант этого класса. Каждая константа является индексом в массиве который описывает матрицу. Так как размер матрицы 3 x 3, то размер оперируемого массива = 9, что соответствует количеству констант в классе. 
@@ -224,7 +222,7 @@ Pre-методы:
 ~~~ xml
 
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -237,13 +235,13 @@ Pre-методы:
         android:scaleType="matrix"
         android:src="@drawable/image" />
 
-</LinearLayout>
+</FrameLayout>
 
 ~~~
 
-Размещаем ImageView по всей доступной родительской площади. Чтобы получить возможность выполнять аффинные операции над выбранным изображением, устанавливаем атрибут scaleType в значение matrix. 
+Обратите внимание ImageView размещается по всей доступной родительской площади. Чтобы получить возможность выполнять аффинные операции над выбранным изображением, устанавливаем атрибут scaleType в значение matrix. 
 
-  В своих преобразованиях (не во всех) я буду работать с размерами изображений. Ширину и высоту картинки получаем с помощью методов getIntrinsicWidth() и getIntrinsicHeight() соответственно, у экземпляра класса Drawable. Важно понимать, что эти методы иногда возвращают неправильные  размеры изображения. Это происходит потому, что растровое изображение лежит в неправильной папке drawable. Если хотите получить точные размеры изображения, то необходимо позаботиться о наличии изображений, подходящих для различных плотностей пикселей, и размещении их в соответствующих папках drawable. Подробнее предлагаю ознакомиться в данной [статье](https://developer.android.com/training/multiscreen/screendensities?hl=ru). 
+  В своих преобразованиях я буду работать с размерами изображений. Ширину и высоту картинки получаем с помощью методов getIntrinsicWidth() и getIntrinsicHeight() соответственно, у экземпляра класса Drawable. Важно понимать, что эти методы иногда возвращают неправильные  размеры изображения. Это происходит потому, что растровое изображение лежит в неправильной папке drawable. Если хотите получить точные размеры изображения, то необходимо позаботиться о наличии изображений, подходящих для различных плотностей пикселей, и размещении их в соответствующих папках drawable. Подробнее предлагаю ознакомиться в данной [статье](https://developer.android.com/training/multiscreen/screendensities?hl=ru). 
   
   Я буду тестировать преобразования на эмуляторе устройства Nexus 4. Учитывая плотность пикселей, я разместил изображение в папке drawable-xhdpi с именем image, чтобы буду получать точные размеры изображения.
 
@@ -257,43 +255,44 @@ Pre-методы:
 
  Чтобы получить исходную матрицу изображения, напишем метод `printMatrixValues`, который будет выводить в лог параметры матрицы, переданной в параметрах метода.
  
-~~~ java
+~~~ kotlin
 
-package mercuriy94.com.matrix.affinetransformations;
+package com.mercuriy94.matrix.affinetransformations
 
-  //Импорты
-  ...
+import android.graphics.Matrix
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity() {
 
-    public static final String TAG = "MainActivity";
-
-    ImageView imageView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                printMatrixValues(imageView.getImageMatrix());
-            }
-        });
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
-    private void printMatrixValues(Matrix matrix) {
-        float[] values = new float[9];
-        matrix.getValues(values);
-        Log.i(TAG, String.format("Matrix values:\n" +
-                        "%f %f %f\n" +
-                        "%f %f %f\n" +
-                        "%f %f %f",
-                values[Matrix.MSCALE_X], values[Matrix.MSKEW_X], values[Matrix.MTRANS_X],
-                values[Matrix.MSKEW_Y], values[Matrix.MSCALE_Y], values[Matrix.MTRANS_Y],
-                values[Matrix.MPERSP_0], values[Matrix.MPERSP_1], values[Matrix.MPERSP_2]));
+    private lateinit var imageView: ImageView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { printMatrixValues(imageView.imageMatrix) }
+
+    }
+
+    private fun printMatrixValues(matrix: Matrix) {
+        val values = FloatArray(9)
+        matrix.getValues(values)
+        Log.i(
+            TAG,
+            "Matrix values:\n" +
+                    "${values[Matrix.MSCALE_X]} ${values[Matrix.MSKEW_X]} ${values[Matrix.MTRANS_X]}\n" +
+                    "${values[Matrix.MSKEW_Y]} ${values[Matrix.MSCALE_Y]} ${values[Matrix.MTRANS_Y]}\n" +
+                    "${values[Matrix.MPERSP_0]} ${values[Matrix.MPERSP_1]} ${values[Matrix.MPERSP_2]}\n"
+        )
     }
 }
 
@@ -309,53 +308,79 @@ public class MainActivity extends AppCompatActivity {
 
   Метод `printMatrixValues(Matrix matrix) ` нам еще пригодится для вывода в лог окончательной матрицы преобразований.
   
-  Обратите внимание, что преобразования сводятся к умножению точки, лежащей на плоскости, на матрицу преобразования. Результатом являются координаты совмещенной точки. В таком случае, необходимо добавить функционал, который будет подтверждать или опровергать правильность вычислений. Добиться этого можно, печатая в лог координаты точек совмещенного изображения. Класс Matrix из SDK Android для этой цели не подходит, так как он работает только с матрицами 3x3. Нам, как минимум, требуется матрица размерностью 3x4 для расчета координат углов изображения. Подключаем эффективную библиотеку для работы с матрицами ([Ссылка на главную страницу](http://ejml.org/wiki/index.php?title=Main_Page)). 
-Предполагаю, что процесс подключения библиотеки в проект не должен вызвать затруднений.
+  Обратите внимание, что преобразования сводятся к умножению точки, лежащей на плоскости, на матрицу преобразования. Результатом являются координаты совмещенной точки. В таком случае, необходимо добавить функционал, который будет подтверждать или опровергать правильность вычислений. Добиться этого можно, печатая в лог координаты точек совмещенного изображения. Класс Matrix из SDK Android для этой цели не подходит, так как он работает только с матрицами 3x3. Нам, как минимум, требуется матрица размерностью 3x4 для расчета координат углов изображения. Подключаем эффективную библиотеку для работы с матрицами ([Ссылка на главную страницу библиотеки](http://ejml.org/wiki/index.php?title=Main_Page)). 
+    Чтобы подключить бибилотеку к проекту, нужно в файле build.gradle модуля вашего проекта добавить строчку в блоке dependencies рядом с остальными вашими зависимостями.
+    
+~~~ groovy
 
+...
+
+dependencies {
+
+    ...
+    implementation 'org.ejml:ejml-all:0.40'
+    ...
+}
+    
+...
+
+~~~     
+    
   Теперь напишем метод, который будет показывать координаты изображения после применения преобразования:
  
-~~~ java
+~~~ kotlin
 
 ...
 
-import org.ejml.simple.SimpleMatrix;
+import org.ejml.simple.SimpleMatrix
 
 ...
 
-      private void printImageCoords(Matrix matrix) {
-
-        float imageWidth = imageView.getDrawable().getIntrinsicWidth();
-        float imageHeight = imageView.getDrawable().getIntrinsicHeight();
-
-        float[] inputCoords = new float[]{
-                0f, imageWidth, imageWidth, 0f,
-                imageHeight, imageHeight, 0f, 0f,
-                1f, 1f, 1f, 1f};
-
-        SimpleMatrix matrixCoords = new SimpleMatrix(3, 4, true, inputCoords);
-        matrixCoords.print();
-
-        float[] values = new float[9];
-        matrix.getValues(values);
-        SimpleMatrix imageImatrix = new SimpleMatrix(3, 3, true, values);
-        SimpleMatrix resultCoords = imageImatrix.mult(matrixCoords);
-        resultCoords.print();
+     /**
+     * Метод распечатывает координаты углов изобаржения в исходном состоянии и
+     * после применения матрицы преобразования [matrix].
+     *
+     * @param matrix - матрица преобразования
+     * */
+    private fun printImageCoords(matrix: Matrix) {
+        val imageWidth = imageView.drawable.intrinsicWidth.toFloat()
+        val imageHeight = imageView.drawable.intrinsicHeight.toFloat()
+        //Создаем матрицу 3 х 4 с исходными координатами углов картинки
+        val inputCoords = arrayOf(
+            floatArrayOf(0f, imageWidth, imageWidth, 0f),
+            floatArrayOf(imageHeight, imageHeight, 0f, 0f),
+            floatArrayOf(1f, 1f, 1f, 1f)
+        )
+        val matrixCoords = SimpleMatrix(inputCoords)
+        println("Исходные координаты углов изображения:\n")
+        matrixCoords.print()
+        val values = FloatArray(9)
+        imageView.imageMatrix.getValues(values)
+        //Создаем двухмерную матрицу преборазования в SimpleMatrix
+        val matrixValues = arrayOf(
+            floatArrayOf(values[Matrix.MSCALE_X], values[Matrix.MSKEW_X], values[Matrix.MTRANS_X]),
+            floatArrayOf(values[Matrix.MSKEW_Y], values[Matrix.MSCALE_Y], values[Matrix.MTRANS_Y]),
+            floatArrayOf(values[Matrix.MPERSP_0], values[Matrix.MPERSP_1], values[Matrix.MPERSP_2])
+        )
+        val imageMatrix = SimpleMatrix(matrixValues)
+        //Выполним умножение матриц чтобы получить искомый результат
+        val resultCoords = imageMatrix.mult(matrixCoords)
+        println("Координаты углов изображения после применения матрицы трансформации:")
+        resultCoords.print()
     }
     
 ...
 
 ~~~
- 
- Полагаю, что данный метод требует комментариев, поэтому давайте его разберем.
- 
- В качестве параметра передается окончательная матрица преобразования. Далее мы получаем размеры изображения и на их основе создаем исходную матрицу координат. С этим нам помогает класс SimpleMatrix. У данного класса имеется несколько конструкторов. Для подробного изучения этого класса, предлагаю перейти по [ссылке](http://ejml.org/javadoc/), а мы остановимся на выбранном конструкторе. В качестве первых двух параметров мы передаем количество строк и столбцов соответственно, из которых будет состоять наша матрица. Третьим параметром передаем true, так как наша матрица является закодированной в строчный массив, то есть одномерный массив. И последним четвертым параметром – сам массив значений матрицы. Далее выполняем перевод матрицы, переданной в параметрах, в удобный для расчета класс SimpleMatrix. Умножение матрицы выполняется  методом  `mult` из класса SimpleMatrix, результатом которого является новая результирующая матрица. 
-Данный класс умеет самостоятельно выводить значения с помощью методов `print()`. Вывод попадает в Logcat c тегом = "System.out", что добавляет удобство в чтении координат углов изображения.
+В качестве параметра передается матрица преобразования для который мы хотим расчитать координаты изображения после ее применения. Далее мы получаем исходные размеры изображения и на их основе создаем первончальную двумерную матрицу координат `inputCoords`. С помощью данной двумерной матрицы создаем объект класса SimpleMatrix передав `inputCoords` в конструктор SimpleMatrix. Вообще у данного класса имеется несколько конструкторов. Для подробного изучения этого класса, можно перейти по [ссылке](http://ejml.org/javadoc/org/ejml/simple/SimpleMatrix.html). Далее подобным образом выполняем перевод, переданной в параметрах матрицы преобразования `matrix` в класс SimpleMatrix. Умножение матрицы выполняется  методом `mult` из класса SimpleMatrix, результатом которого является новая результирующая матрица которая описывает новые координаты углов изображения. 
+    
+Данный класс умеет самостоятельно выводить значения с помощью методов `print()`. Вывод попадает в Logcat c тегом = "System.out".
 Ниже представлен результат координат исходной матрицы:
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%201/Resources/Images/sample_result_coords_img.png?raw=true)
  
 Наконец-то все готово! 
-В заключение первой статьи, предлагаю рассмотреть несложное преобразование.
+    В заключение первой статьи, предлагаю рассмотреть несложное преобразование.
 
 ### Перемещение (Сдвиг) (Transition)
 
@@ -427,59 +452,46 @@ C третьим уравнением все еще легче. 
 
 А теперь реализуем в Android (все внимание на метод `translateToCenter`):
 
-~~~ java
+~~~ kotlin
 
-package mercuriy94.com.matrix.affinetransformations;
+package com.mercuriy94.matrix.affinetransformations
 
-  //Импорты
-  ...
+    ...
+
+class MainActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
+    private lateinit var imageView: ImageView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { translateToCenter() }
+    }
+
+    private fun translateToCenter() {
+        val transformMatrix = Matrix()
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        val matrixValues = floatArrayOf(
+            1f, 0f, tx,
+            0f, 1f, ty,
+            0f, 0f, 1f
+        )
+        transformMatrix.setValues(matrixValues)
+        val imageMatrix = imageView.imageMatrix
+        imageMatrix.postConcat(transformMatrix)
+        imageView.imageMatrix = imageMatrix
+        printImageCoords(transformMatrix)
+    }
     
-public class MainActivity extends AppCompatActivity {
-
-    public static final String TAG = "MainActivity";
-  
-    ImageView imageView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                translateToCenter();
-            }
-            
-        });
-    }
-
-
-    private void translateToCenter() {
-        Matrix transformMatrix = new Matrix();
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        float[] matrixValues = new float[]{
-                1f, 0f, tx,
-                0f, 1f, ty,
-                0f, 0f, 1f};
-
-        transformMatrix.setValues(matrixValues);
-
-        Matrix imageMatrix = imageView.getImageMatrix();
-
-        imageMatrix.postConcat(transformMatrix);
-        imageView.setImageMatrix(imageMatrix);
-        printImageCoords(transformMatrix);
-    }
-  
-  ...
-  
+    ...
+    
 }
 
 ~~~
@@ -494,19 +506,16 @@ public class MainActivity extends AppCompatActivity {
 
 Вся соль в методе translateToCenter(), который и выполняет сдвиг в центр контейнера. В данном примере я вручную заполняю значения матрицы преобразования (matrixValues). Это достаточно утомительное занятие, поэтому в классе matrix есть два метода postTranslate и preTranslate. Различие между post и pre методах обсуждалось выше в разделе «Post и Pre функции трансформаций в андройде». В качестве параметров, данные методы принимают расстояние сдвига tx и ty. Давайте перепишем метод translateToCenter(), как это выглядело бы в реальной задаче центрирования.
 
-~~~ java
+~~~ kotlin
 
   ...
 
-    private void translateToCenter() {
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        Matrix imageMatrix = imageView.getImageMatrix();
-
-        imageMatrix.postTranslate(tx, ty);
-        imageView.setImageMatrix(imageMatrix);
+    private fun translateToCenter() {
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        val imageMatrix = imageView.imageMatrix
+        imageMatrix.postTranslate(tx, ty)
+        imageView.imageMatrix = imageMatrix
     }
 
 ...
