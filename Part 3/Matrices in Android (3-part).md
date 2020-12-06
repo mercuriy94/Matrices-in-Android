@@ -77,82 +77,69 @@ P.S.: Напоминаю, что информацию о подготовке п
   
   Перепишем наш пример:
   
-~~~ java
+~~~ kotlin
+package com.mercuriy94.matrix.affinetransformations
 
-package mercuriy94.com.matrix.affinetransformations;
+import android.graphics.Matrix
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
+import org.ejml.simple.SimpleMatrix
 
-//  Импорты
-...
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity() {
 
-    public static final String TAG = "MainActivity";
-
-    ImageView imageView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                transScaleSkew();
-            }
-        });
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
-  private void transScaleSkew() {
+    private lateinit var imageView: ImageView
 
-        Matrix transformImageMatrix = imageView.getImageMatrix();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { transScaleSkew() }
+    }
+
+    private fun transScaleSkew() {
+        val transformImageMatrix = imageView.imageMatrix
 
         //region translate to center
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        transformImageMatrix.postTranslate(tx, ty);
-
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        transformImageMatrix.postTranslate(tx, ty)
         //endregion translate to center
 
         //region scale
-
-        float sx = 2f;
-        float sy = 2f;
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = imageView.getMeasuredHeight() / 2f;
-
-        transformImageMatrix.postScale(sx, sy, px, py);
-
+        val sx = 2f
+        val sy = 2f
+        val px = imageView.measuredWidth / 2f
+        val py = imageView.measuredHeight / 2f
+        transformImageMatrix.postScale(sx, sy, px, py)
         //endregion scale
 
         //region skew
-
-        float[] skewMatrixValues = new float[]{
-                1f, (float) Math.tan(Math.toRadians(15d)), -(float) Math.tan(Math.toRadians(15d)) * py,
-                (float) Math.tan(Math.toRadians(30d)), 1f, -(float) Math.tan(Math.toRadians(30d)) * px,
-                0f, 0f, 1f};
-
-        Matrix skewMatrix = new Matrix();
-        skewMatrix.setValues(skewMatrixValues);
-
-        transformImageMatrix.postConcat(skewMatrix);
-
+        val skewMatrixValues = floatArrayOf(
+            1f, Math.tan(Math.toRadians(15.0)).toFloat(), (-Math.tan(Math.toRadians(15.0))).toFloat() * py,
+            Math.tan(Math.toRadians(30.0)).toFloat(), 1f, (-Math.tan(Math.toRadians(30.0))).toFloat() * px,
+            0f, 0f, 1f
+        )
+        val skewMatrix = Matrix()
+        skewMatrix.setValues(skewMatrixValues)
+        transformImageMatrix.postConcat(skewMatrix)
         //endregion skew
 
-        imageView.setImageMatrix(transformImageMatrix);
-
-        printMatrixValues(transformImageMatrix);
-        printImageCoords(transformImageMatrix);
+        imageView.imageMatrix = transformImageMatrix
+        printMatrixValues(transformImageMatrix)
+        printImageCoords(transformImageMatrix)
     }
+    ...
 
-  ...
-    
 }
-
 ~~~
 
 Результат получился следующим:
@@ -167,47 +154,40 @@ public class MainActivity extends AppCompatActivity {
 
 Конечно, класс Matrix содержит готовые методы для выполнения наклона postSkew и preSkew. У этих методов есть два обязательных параметра kx и ky, которые являются значениями тангенса угла. Если вам нужно наклонять только по одной из осей, то для второй передаем параметр 0f, так как тангенс нуля равен нулю. А также, имеется два опциональных параметра px и py, смысл которых нам уже известен из второй статьи. Теперь перепишем наш метод transScaleSkew с использованием метода postSkew.
 
-~~~java
+~~~kotlin
+    ...
 
-...
-
-  private void transScaleSkew() {
-
-        Matrix imageMatrix = imageView.getImageMatrix();
+    private fun transScaleSkew() {
+        val imageMatrix = imageView.imageMatrix
 
         //region translate to center
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        imageMatrix.postTranslate(tx, ty);
-
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        imageMatrix.postTranslate(tx, ty)
         //endregion translate to center
 
         //region scale
-
-        float sx = 2f;
-        float sy = 2f;
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = imageView.getMeasuredHeight() / 2f;
-
-        imageMatrix.postScale(sx, sy, px, py);
+        val sx = 2f
+        val sy = 2f
+        val px = imageView.measuredWidth / 2f
+        val py = imageView.measuredHeight / 2f
+        imageMatrix.postScale(sx, sy, px, py)
 
         //endregion scale
 
         //region skew
-
-        imageMatrix.postSkew((float) Math.tan(Math.toRadians(15)), (float) Math.tan(Math.toRadians(30)), px, py);
-
+        imageMatrix.postSkew(
+            Math.tan(Math.toRadians(15.0)).toFloat(),
+            Math.tan(Math.toRadians(30.0)).toFloat(),
+            px,
+            py
+        )
         //endregion skew
-
-        printMatrixValues(imageMatrix);
-
-        imageView.setImageMatrix(imageMatrix);
+        printMatrixValues(imageMatrix)
+        imageView.imageMatrix = imageMatrix
     }
-...
-
+    
+    ...
 ~~~
 
 ### Отражение (Reflexion)
@@ -258,73 +238,62 @@ public class MainActivity extends AppCompatActivity {
  
 Перейдем к реализации на Android:
 
-~~~java
+~~~kotlin
+package com.mercuriy94.matrix.affinetransformations
 
-package mercuriy94.com.matrix.affinetransformations;
+import android.graphics.Matrix
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
+import org.ejml.simple.SimpleMatrix
 
-public class MainActivity extends AppCompatActivity {
 
-  //  Импорты
-  ...
-  
-    public static final String TAG = "MainActivity";
+class MainActivity : AppCompatActivity() {
 
-    ImageView imageView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                translateToCenterAndReflect();
-            }
-
-        });
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
-    private void translateToCenterAndReflect() {
+    private lateinit var imageView: ImageView
 
-        Matrix transformMatrix = new Matrix();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { translateToCenterAndReflect() }
+    }
+
+    private fun translateToCenterAndReflect() {
+        val transformMatrix = Matrix()
 
         //region trans
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        Matrix imageMatrix = imageView.getImageMatrix();
-        imageMatrix.postTranslate(tx, ty);
-
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        val imageMatrix = imageView.imageMatrix
+        imageMatrix.postTranslate(tx, ty)
         //endregion trans
 
         //region reflect
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = ty;
-
-        float[] matrixValues = new float[]{
-                -1f, 0f, 2 * px,
-                0f, -1f, 2 * py,
-                0f, 0f, 1f};
-
-        transformMatrix.setValues(matrixValues);
-        imageMatrix.postConcat(transformMatrix);
+        val px = imageView.measuredWidth / 2f
+        val py = ty
+        val matrixValues = floatArrayOf(
+            -1f, 0f, 2 * px,
+            0f, -1f, 2 * py,
+            0f, 0f, 1f
+        )
+        transformMatrix.setValues(matrixValues)
+        imageMatrix.postConcat(transformMatrix)
 
         //endregion reflect
-
-        imageView.setImageMatrix(imageMatrix);
-
-        printImageCoords(imageView.getImageMatrix());
+        imageView.imageMatrix = imageMatrix
+        printImageCoords(imageView.imageMatrix)
     }
-
+    
     ...
-
 }
-
 ~~~
 
 Результат:
