@@ -2,7 +2,7 @@
 
 В первой статье, мы познакомились с аффинным преобразованием, в каких целях оно используется, а также рассмотрели преобразование = "Сдвиг". Если в первой статье большая часть строк была отведена теории, то во второй части мы поговорим о практическом применении, где подробно рассмотрим преобразования масштабирования и вращения, с учетом опорной точки для этих трансформаций. Эти преобразования, широко используется в обработке изображений, поэтому думаю будет интересно. Поехали!
 
-P.S.: Напоминаю, что информацию о подготовке проекта и ресурсов вы найдете в первой статье!
+P.S.: Информацию о подготовке проекта и ресурсов вы найдете в первой статье!
 
 ### Масштабирование изображения (Scale)
 
@@ -32,55 +32,51 @@ P.S.: Напоминаю, что информацию о подготовке п
  
 Посмотрите на реализацию:
 
-~~~ java
+~~~ kotlin
 
-package mercuriy94.com.matrix.affinetransformations;
+package com.mercuriy94.matrix.affinetransformations
 
-//Импорты 
-...
+import android.graphics.Matrix
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
+import org.ejml.simple.SimpleMatrix
 
-public class MainActivity extends AppCompatActivity {
 
-    ImageView imageView;
+class MainActivity : AppCompatActivity() {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                scale();
-            }
-        });
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
-  private void scale() {
+    private lateinit var imageView: ImageView
 
-        Matrix transformMatrix = new Matrix();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        float sx = 2f;
-        float sy = 2f;
-
-        float[] matrixValues = new float[]{
-                sx, 0f, 0f,
-                0f, sy, 0f,
-                0f, 0f, 1f};
-
-        transformMatrix.setValues(matrixValues);
-
-        Matrix imageMatrix = imageView.getImageMatrix();
-
-        imageMatrix.postConcat(transformMatrix);
-        imageView.setImageMatrix(imageMatrix);
-
-        printImageCoords(transformMatrix);
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { scale() }
     }
-  
-  ...
-    
+
+    private fun scale() {
+        val transformMatrix = Matrix()
+        val sx = 2f
+        val sy = 2f
+        val matrixValues = floatArrayOf(
+            sx, 0f, 0f,
+            0f, sy, 0f,
+            0f, 0f, 1f
+        )
+        transformMatrix.setValues(matrixValues)
+        val imageMatrix = imageView.imageMatrix
+        imageMatrix.postConcat(transformMatrix)
+        imageView.imageMatrix = imageMatrix
+        printImageCoords(transformMatrix)
+    }
+    ...
 }
 
 ~~~
@@ -89,26 +85,23 @@ public class MainActivity extends AppCompatActivity {
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_sample_scale_result.png?raw=true)
 
-Убеждаемся в правильности расчетов:
+Посмотрим логи для убеждения в правильности наших расчетов:
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matix_values_log_input_scale_coords.png?raw=true)
 
-Скорее всего, вы уже догадались, что нам необязательно создавать матрицу преобразования. Для этого достаточно знать о методах postScale(...) и preScale(...). Эти методы включают в себя обязательные параметры: sx и sy. А также опциональные (необязательные) параметры: px и py. 
+Скорее всего, вы уже догадались, что нам необязательно каждый раз создавать матрицу преобразования. Для этого достаточно знать о методах postScale(...) и preScale(...). Эти методы включают в себя обязательные параметры: sx и sy. А также опциональные (необязательные) параметры: px и py. 
 Вот так выглядит использование метода scale(), без матрицы преобразования:
 
-~~~ java
+~~~ kotlin
 
 ...
 
-  private void scale() {
-
-        float sx = 2f;
-        float sy = 2f;
-
-        Matrix imageMatrix = imageView.getImageMatrix();
-
-        imageMatrix.postScale(sx, sy);
-        imageView.setImageMatrix(imageMatrix);
+  private fun scale() {
+        val sx = 2f
+        val sy = 2f
+        val imageMatrix = imageView.imageMatrix
+        imageMatrix.postScale(sx, sy)
+        imageView.imageMatrix = imageMatrix
     }
   
 ...
@@ -125,97 +118,85 @@ public class MainActivity extends AppCompatActivity {
 
 Пример:
 
-Чтобы все было красиво, давайте перед этим выполним известную нам операцию переноса в центр контейнера. Таким образом, получим комбинацию преобразований. 
-Как и прежде, сначала рассчитаем финальное положение углов изображения. Но, чтобы это выполнить, нам необходимо получить опорную точку для масштабирования. Так как изображение будет расположено в центре контейнера, то опорной точкой будет центр контейнера, а координаты точки будут равны половине его ширины и высоты. В моем случае получилось:
+Перед масштабированием выполним известную нам операцию переноса(из первой статьи) в центр контейнера. Таким образом, получим комбинацию преобразований. 
+Как и прежде, сначала рассчитаем финальное положение углов изображения. Но, чтобы это выполнить, нам необходимо получить опорную точку для масштабирования. Так как изображение будет расположено в центре контейнера, то опорной точкой будет центр контейнера, а координаты данной точки будут равны половине его ширины и высоты. В моем случае получилось:
 
   * px = 384;
   * py = 512;
 
-Параметры  tx и ty равны 264 и 352 соответственно, их мы вычисляли в первой статье, когда выполняли сдвиг изображения в центр. Теперь, когда известны все переменные, перейдем к вычислениям:
+Параметры  tx и ty равны 264 и 352 соответственно, их мы вычисляли в первой статье, когда выполняли сдвиг изображения в центр. Теперь, когда известны все входные данные, перейдем к вычислениям окончательных координат углов изображения после выполнения комбинации преобразований
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/image_formula_scale_sample_anchor_point.png?raw=true)
  
 Давайте приступим к реализации на Android:
 
-~~~ java
+~~~ kotlin
+package com.mercuriy94.matrix.affinetransformations
 
-package mercuriy94.com.matrix.affinetransformations;
+import android.graphics.Matrix
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
+import org.ejml.simple.SimpleMatrix
 
-//imports
-...
-  
-public class MainActivity extends AppCompatActivity {
 
-    public static final String TAG = "MainActivity";
+class MainActivity : AppCompatActivity() {
 
-    ImageView imageView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                transAndScale();
-            }
-        });
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
- private void transAndScale() {
+    private lateinit var imageView: ImageView
 
-        Matrix transformImageMatrix = imageView.getImageMatrix();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { transAndScale() }
+    }
+
+    private fun transAndScale() {
+        val transformImageMatrix = imageView.imageMatrix
 
         //region translate to center
-
-        Matrix translateToCenterMatrix = new Matrix();
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        float[] translateMatrixValues = new float[]{
-                1f, 0f, tx,
-                0f, 1f, ty,
-                0f, 0f, 1f};
-
-        translateToCenterMatrix.setValues(translateMatrixValues);
-
-        transformImageMatrix.postConcat(translateToCenterMatrix);
-
+        val translateToCenterMatrix = Matrix()
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        val translateMatrixValues = floatArrayOf(
+            1f, 0f, tx,
+            0f, 1f, ty,
+            0f, 0f, 1f
+        )
+        translateToCenterMatrix.setValues(translateMatrixValues)
+        transformImageMatrix.postConcat(translateToCenterMatrix)
         //endregion translate to center
 
         //region scale
-
-        float sx = 2f;
-        float sy = 2f;
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = imageView.getMeasuredHeight() / 2f;
-
-        float[] scaleMatrixValues = new float[]{
-                sx, 0f, -px * sx + px,
-                0f, sy, -py * sy + py,
-                0f, 0f, 1f};
-
-        Matrix scaleMatrix = new Matrix();
-        scaleMatrix.setValues(scaleMatrixValues);
-
-        transformImageMatrix.postConcat(scaleMatrix);
-
+        val sx = 2f
+        val sy = 2f
+        val px = imageView.measuredWidth / 2f
+        val py = imageView.measuredHeight / 2f
+        val scaleMatrixValues = floatArrayOf(
+            sx, 0f, -px * sx + px,
+            0f, sy, -py * sy + py,
+            0f, 0f, 1f
+        )
+        val scaleMatrix = Matrix()
+        scaleMatrix.setValues(scaleMatrixValues)
+        transformImageMatrix.postConcat(scaleMatrix)
         //endregion scale
 
-        imageView.setImageMatrix(transformImageMatrix);
-   
-        printMatrixValues(transformImageMatrix);
-        printImageCoords(transformImageMatrix);
+        imageView.imageMatrix = transformImageMatrix
+        printMatrixValues(transformImageMatrix)
+        printImageCoords(transformImageMatrix)
     }
-  
-  ....
+
+    ...
 
 }
-
 ~~~
 
 Для удобства чтения разбиваем метод на 2 региона, чтобы с легкостью наблюдать последовательное применение преобразований. Результат получился следующим:
@@ -236,42 +217,30 @@ public class MainActivity extends AppCompatActivity {
 
 Теперь перепишем метод transAndScale() с использованием методов postTranlate() и postScale():
 
-~~~ java
-
+~~~ kotlin
 ...
   
-  private void transAndScale() {
-
-        Matrix transformImageMatrix = imageView.getImageMatrix();
+    private fun transAndScale() {
+        val transformImageMatrix = imageView.imageMatrix
 
         //region translate to center
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        transformImageMatrix.postTranslate(tx, ty);
-
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        transformImageMatrix.postTranslate(tx, ty)
         //endregion translate to center
 
         //region scale
-
-        float sx = 2f;
-        float sy = 2f;
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = imageView.getMeasuredHeight() / 2f;
-
-        transformImageMatrix.postScale(sx, sy, px, py);
-
+        val sx = 2f
+        val sy = 2f
+        val px = imageView.measuredWidth / 2f
+        val py = imageView.measuredHeight / 2f
+        transformImageMatrix.postScale(sx, sy, px, py)
         //endregion scale
-
-        imageView.setImageMatrix(transformImageMatrix);
+        imageView.imageMatrix = transformImageMatrix
     }
 
 ...
-  
 ~~~
-
 
 ### Поворот (вращение) изображения  (Rotate)
 
@@ -320,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
 ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/matrix_rotate_final_formula.png?raw=true)
 
-  Чтобы вращать плоскость вокруг опорной точки (например центра изображения), необходимо выполнить следующие операции преобразования:
+  Предлагаю не останавливаться и сразу перейти к вращению плоскости вокруг опорной точки (например центра изображения). Для этого как и с масштабированием необходимо выполнить следующие операции преобразования:
 1. Сместить на обратные координаты опорной точки;
 2. Выполнить вращение;
 3. Сместить обратно на координаты опорной точки;
@@ -332,94 +301,79 @@ public class MainActivity extends AppCompatActivity {
 Так как используется несколько типов преобразований, то этот вид вращения является комбинацией преобразований.    
 
 Теперь рассмотрим применение вращения в Android.
-Предлагаю опустить базовый пример, состоящий из одного преобразования, вместо этого предлагаю дополнить пример из раздела "Масштабирование". Следовательно, исходными данными будет отцентрированное и растянутое по двух осям изображение, а входной матрицей будет результат матрицы из раздела "Масштабирование". Вращать изображение мы будем на 90 градусов.
-Как обычно, давайте рассчитаем координаты, на которые лягут углы изображения.
+Пропустим базовый пример, состоящий из одного преобразования, вместо этого предлагаю дополнить пример из раздела "Масштабирование". Следовательно, исходными данными будет отцентрированное и растянутое по двух осям изображение, а входной матрицей будет результат матрицы из раздела "Масштабирование". Вращать изображение мы будем на 90 градусов.
+Как обычно, давайте рассчитаем координаты, на которые лягут углы изображения на координатной плоскости.
 
-P.S: Не пугайтесь, вам необязательно прослеживать путь решения, достаточно понимать выполняемые действия. =) 
+P.S: Не пугайтесь, вам необязательно прослеживать весь путь решения, достаточно понимать выполняемые действия. =) 
  
  ![](https://github.com/mercuriy94/Matrices-in-Android/blob/master/Part%202/Resources/Images/formua_sample_image_rotate_anchor_point.png?raw=true)
  
-После долгих вычислений, давайте перейдем к коду:
+Теперь когда у нас есть ожидаемый результат, давайте перейдем к реализации:
  
-~~~ java
+~~~ kotlin
+package com.mercuriy94.matrix.affinetransformations
 
-package mercuriy94.com.matrix.affinetransformations;
+import android.graphics.Matrix
+import android.os.Bundle
+import android.util.Log
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
+import org.ejml.simple.SimpleMatrix
 
-//Импорты
-...
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity() {
 
-    public static final String TAG = "MainActivity";
-
-    ImageView imageView;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
-        imageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                imageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                transScaleRotate();
-            }
-        });
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
-     private void transScaleRotate() {
+    private lateinit var imageView: ImageView
 
-        Matrix transformImageMatrix = imageView.getImageMatrix();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        imageView = findViewById(R.id.imageView)
+        imageView.doOnLayout { transScaleRotate() }
+    }
+
+    private fun transScaleRotate() {
+        val transformImageMatrix = imageView.imageMatrix
 
         //region translate to center
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        transformImageMatrix.postTranslate(tx, ty);
-
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        transformImageMatrix.postTranslate(tx, ty)
         //endregion translate to center
 
         //region scale
-
-        float sx = 2f;
-        float sy = 2f;
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = imageView.getMeasuredHeight() / 2f;
-
-        transformImageMatrix.postScale(sx, sy, px, py);
-
+        val sx = 2f
+        val sy = 2f
+        val px = imageView.measuredWidth / 2f
+        val py = imageView.measuredHeight / 2f
+        transformImageMatrix.postScale(sx, sy, px, py)
         //endregion scale
 
         //region rotate
-
-        Matrix matrixRotate = new Matrix();
-
-        double degrees = Math.toRadians(90d);
-
-        float[] rotateMatrixValues = new float[]{
-                (float) Math.cos(degrees), -(float) Math.sin(degrees), -(float) Math.cos(degrees) * px + (float) Math.sin(degrees) * py + px,
-                (float) Math.sin(degrees), (float) Math.cos(degrees), -(float) Math.sin(degrees) * px - (float) Math.cos(degrees) * py + py,
-                0f, 0f, 1f};
-
-
-        matrixRotate.setValues(rotateMatrixValues);
-        transformImageMatrix.postConcat(matrixRotate);
-
+        val matrixRotate = Matrix()
+        val degrees = Math.toRadians(90.0)
+        val rotateMatrixValues = floatArrayOf(
+            Math.cos(degrees).toFloat(), (-Math.sin(degrees)).toFloat(), (-Math.cos(degrees)).toFloat() * px + Math.sin(degrees).toFloat() * py + px,
+            Math.sin(degrees).toFloat(), Math.cos(degrees).toFloat(), (-Math.sin(degrees)).toFloat() * px - Math.cos(degrees).toFloat() * py + py,
+            0f, 0f, 1f
+        )
+        matrixRotate.setValues(rotateMatrixValues)
+        transformImageMatrix.postConcat(matrixRotate)
         //endregion rotate
 
-        imageView.setImageMatrix(transformImageMatrix);
-       
-        printMatrixValues(transformImageMatrix);
-        printImageCoords(transformImageMatrix);
+        imageView.imageMatrix = transformImageMatrix
+        printMatrixValues(transformImageMatrix)
+        printImageCoords(transformImageMatrix)
     }
-  
-  ... 
-    
-}
 
+    ...
+}
 ~~~
 
 Я переименовал метод в transScaleRotate(). Операции сдвига и масштабирования мы оставили неизменными, но добавили регион кода выполняющего вращение (rotate). 
@@ -435,48 +389,34 @@ public class MainActivity extends AppCompatActivity {
   Конечно, класс Matrix уже содержит методы для выполнения вращения: postRotate и preRotate. У данных методов есть обязательный параметр degrees, который определяет угол поворота плоскости изображения в градусах, а также опциональные параметры px и py – также как и в масштабировании эти параметры определяют координату опорной точки. А теперь, по традиции, перепишем метод transScaleRotate с использованием метода postRotate(). 
 Обратите внимание, что в операциях масштабирования и вращения, используются одни и те же значения px и py, так как координаты опорных точек для этих операций мы сделали одинаковыми. Напоминаю, что px и py в нашем случае описывают координаты центра контейнера ImageView.
 
-~~~ java
+~~~ kotlin
 
 ...
-
-  private void transScaleRotate() {
-
-        Matrix imageMatrix = imageView.getImageMatrix();
+    private fun transScaleRotate() {
+        val imageMatrix = imageView.imageMatrix
 
         //region translate to center
-
-        float tx = (imageView.getMeasuredWidth() - imageView.getDrawable().getIntrinsicWidth()) / 2f;
-        float ty = (imageView.getMeasuredHeight() - imageView.getDrawable().getIntrinsicHeight()) / 2f;
-
-        imageMatrix.postTranslate(tx, ty);
-
+        val tx = (imageView.measuredWidth - imageView.drawable.intrinsicWidth) / 2f
+        val ty = (imageView.measuredHeight - imageView.drawable.intrinsicHeight) / 2f
+        imageMatrix.postTranslate(tx, ty)
         //endregion translate to center
 
         //region scale
-
-        float sx = 2f;
-        float sy = 2f;
-
-        float px = imageView.getMeasuredWidth() / 2f;
-        float py = imageView.getMeasuredHeight() / 2f;
-
-        imageMatrix.postScale(sx, sy, px, py);
-
+        val sx = 2f
+        val sy = 2f
+        val px = imageView.measuredWidth / 2f
+        val py = imageView.measuredHeight / 2f
+        imageMatrix.postScale(sx, sy, px, py)
         //endregion scale
 
         //region rotate
-
-        float degrees = 90f;
-
-        imageMatrix.postRotate(degrees, px, py);
-
+        val degrees = 90f
+        imageMatrix.postRotate(degrees, px, py)
         //endregion rotate
-
-        printMatrixValues(imageMatrix);
-
-        imageView.setImageMatrix(imageMatrix);
+        
+        printMatrixValues(imageMatrix)
+        imageView.imageMatrix = imageMatrix
     }
-
 ...
 
 ~~~
